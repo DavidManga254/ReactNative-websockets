@@ -1,9 +1,18 @@
 const { Server } = require("socket.io");
 
-const io = new Server();
+function createSocketServer(httpServer: any): void {
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"],
+    },
+  });
 
-io.on("connection", () => {
-  console.log("connected");
-});
+  io.on("connection", (socket: any) => {
+    console.log(`User connected ${socket.id}`);
 
-module.exports = io;
+    // We can write our socket event listeners in here...
+  });
+}
+
+module.exports = createSocketServer;

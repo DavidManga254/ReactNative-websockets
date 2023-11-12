@@ -5,7 +5,7 @@
  */
 
 var app = require("../../app");
-const socket = require("../socket/socket.ts");
+const socketServer = require("../socket/socket.ts");
 var debug = require("debug")("server:server");
 var http = require("http");
 
@@ -22,14 +22,14 @@ app.set("port", port);
 
 var server = http.createServer(app);
 
-//attach socket.io
-socket.attach(server);
-
 /**
  * Listen on provided port, on all network interfaces.
  */
 
 server.listen(port);
+
+socketServer(server);
+
 server.on("error", onError);
 server.on("listening", onListening);
 
