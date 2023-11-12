@@ -1,14 +1,26 @@
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import { useState } from "react";
+import Backdrop from "@mui/material/Backdrop";
+import { CreareRoomForm } from "../createRoomForm/createRoomForm";
 export function SideBar() {
+  const [showForm, setShowForm] = useState<boolean>(false);
   return (
     <div className="w-full h-full">
+      {showForm ? (
+        <Backdrop open={showForm}>
+          <div className="w-screen h-scren flex justify-center items-center">
+            <CreareRoomForm />
+          </div>
+        </Backdrop>
+      ) : null}
       <div className="flex flex-row justify-end mb-3">
         <Button
           size="small"
           component="label"
           variant="contained"
           startIcon={<AddIcon />}
+          onClick={() => setShowForm(true)}
         >
           Create Chat Room
         </Button>

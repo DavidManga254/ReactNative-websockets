@@ -1,4 +1,4 @@
-import { SideBar } from "../../components/rootComponent/sidebar/sidebar";
+import { SideBar } from "../../components/sidebar/sidebar";
 import { Outlet } from "react-router-dom";
 
 export function ChatPage() {
