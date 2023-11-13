@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { socket } from "../../API/socket/clientSocketConfigurations/clientSocketConfigurations";
+import { useNavigate } from "react-router-dom";
 interface roomInterface {
   roomName: string;
   roomPassword: string;
@@ -10,10 +11,15 @@ export function CreareRoomForm() {
     roomPassword: "",
   });
 
+  const navigate = useNavigate();
+
   function createRoom(e: any) {
     e.preventDefault();
     console.log("emmitutii");
     socket.emit("create_room", roomDetails);
+    socket.on("room_created", (message: string) => {
+      alert(message);
+    });
   }
   return (
     <div className="w-[25%] ">

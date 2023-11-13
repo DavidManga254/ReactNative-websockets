@@ -1,5 +1,8 @@
-const { Server } = require("socket.io");
+import { Socket } from "socket.io";
 
+const { Server } = require("socket.io");
+const CreateRoom = require("../controllers/CreateRoomController/CreateRoomController");
+const JoinRoom = require("../controllers/JoinRoomController/JoinRoomController");
 function createSocketServer(httpServer: any): void {
   const io = new Server(httpServer, {
     cors: {
@@ -8,12 +11,22 @@ function createSocketServer(httpServer: any): void {
     },
   });
 
-  io.on("connection", (socket: any) => {
+  io.on("connection", (socket: Socket) => {
     console.log(`User connected ${socket.id}`);
+    interface roomInterface {
+      roomName: string;
+      roomPassword: string;
+    }
+    socket.on("create_room", (args: roomInterface) => {
+      try {
+        CreateRoom(args.roomName, args.roomPassword, socket);
+      } catch (error) {}
+    });
 
-    // We can write our socket event listeners in here...
-    socket.on("create_room", (args1: string, args2: string) => {
-      console.log(args1, args2);
+    socket.on("join_room", (args: roomInterface) => {
+      try {
+        JoinRoom(args.roomName, socket);
+      } catch (error) {}
     });
   });
 }
