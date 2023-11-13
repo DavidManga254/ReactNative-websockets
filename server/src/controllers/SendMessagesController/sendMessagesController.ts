@@ -9,8 +9,6 @@ interface messageDetails {
 function sendMessage(socket: Socket, data: messageDetails): void {
   try {
     socket.to(data.roomName).emit("message_sent", data);
-
-    console.log(data, "color:blue");
   } catch (error) {
     console.log(error);
   }

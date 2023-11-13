@@ -12,32 +12,31 @@ export function ChatDetailsPage() {
   const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
+    socket.on("message_sent", (data: messageDetails) => {
+      setMessages((previous) => {
+        return [...previous, data];
+      });
+    });
+
     socket.emit("join_room", { roomName: room });
 
     return (() => {
       socket.emit("leave_room", { roomName: room });
     })();
-  }, [room, socket]);
-
-  socket.on("message_sent", (data: messageDetails) => {
-    console.log(data);
-    setMessages((previous) => {
-      console.log(previous);
-      return [...previous, data];
-    });
-  });
+  }, []);
 
   function sendMessage(e: any) {
     e.preventDefault();
 
     const messageData: messageDetails = {
-      roomName: "david",
+      roomName: room as string,
       sender: `david ${messages.length}`,
       message: message,
       time: Date.now().toString(),
     };
 
     setMessages((previous) => [...previous, messageData]);
+
     socket.emit("send_message", messageData);
   }
 
@@ -60,7 +59,7 @@ export function ChatDetailsPage() {
         <form onSubmit={(e) => sendMessage(e)}>
           <input
             onChange={(e) => setMessage(e.target.value)}
-            className=" border-2"
+            className=" border-2 p-2"
             type="text"
             required
           />
