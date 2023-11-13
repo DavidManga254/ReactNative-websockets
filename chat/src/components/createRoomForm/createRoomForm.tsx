@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { socket } from "../../API/socket/clientSocketConfigurations/clientSocketConfigurations";
 import { useNavigate } from "react-router-dom";
+import { useProviderContext } from "../../hooks/useProviderHook/useProviderHook";
 interface roomInterface {
   roomName: string;
   roomPassword: string;
@@ -10,7 +10,7 @@ export function CreareRoomForm() {
     roomName: "",
     roomPassword: "",
   });
-
+  const socket = useProviderContext();
   const navigate = useNavigate();
 
   function createRoom(e: any) {
@@ -18,7 +18,7 @@ export function CreareRoomForm() {
     console.log("emmitutii");
     socket.emit("create_room", roomDetails);
     socket.on("room_created", (message: string) => {
-      alert(message);
+      navigate(`/chat/${message}`);
     });
   }
   return (

@@ -1,10 +1,18 @@
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import { CreareRoomForm } from "../createRoomForm/createRoomForm";
+import { useLocation } from "react-router-dom";
+
 export function SideBar() {
   const [showForm, setShowForm] = useState<boolean>(false);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setShowForm(false);
+  }, [location.pathname]);
   return (
     <div className="w-full h-full">
       {showForm ? (
