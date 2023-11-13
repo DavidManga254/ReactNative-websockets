@@ -30,9 +30,9 @@ function createSocketServer(httpServer: any): void {
       } catch (error) {}
     });
 
-    socket.on("send_message", (args: roomInterface) => {
+    socket.on("send_message", (args: any) => {
       try {
-        JoinRoom(args.roomName, socket);
+        SendMessage(socket, args);
       } catch (error) {}
     });
   });

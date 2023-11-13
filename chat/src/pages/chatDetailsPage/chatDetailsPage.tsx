@@ -1,10 +1,82 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useProviderContext } from "../../hooks/useProviderHook/useProviderHook";
+import { useParams } from "react-router-dom";
 
 export function ChatDetailsPage() {
   const socket = useProviderContext();
 
-  const [messages, setMessages] = useState<[]>();
+  const { room } = useParams();
 
-  return <div></div>;
+  const [messages, setMessages] = useState<messageDetails[]>([]);
+
+  const [message, setMessage] = useState<string>("");
+
+  useEffect(() => {
+    socket.emit("join_room", { roomName: room });
+
+    return (() => {
+      socket.emit("leave_room", { roomName: room });
+    })();
+  }, [room, socket]);
+
+  socket.on("message_sent", (data: messageDetails) => {
+    console.log(data);
+    setMessages((previous) => {
+      console.log(previous);
+      return [...previous, data];
+    });
+  });
+
+  function sendMessage(e: any) {
+    e.preventDefault();
+
+    const messageData: messageDetails = {
+      roomName: "david",
+      sender: `david ${messages.length}`,
+      message: message,
+      time: Date.now().toString(),
+    };
+
+    setMessages((previous) => [...previous, messageData]);
+    socket.emit("send_message", messageData);
+  }
+
+  return (
+    <div>
+      <div>
+        {messages.length > 0 ? (
+          messages.map((message, index) => {
+            return (
+              <div key={index} className="mb-3">
+                {message.sender} : {message.message}
+              </div>
+            );
+          })
+        ) : (
+          <div>No messages </div>
+        )}
+      </div>
+      <div>
+        <form onSubmit={(e) => sendMessage(e)}>
+          <input
+            onChange={(e) => setMessage(e.target.value)}
+            className=" border-2"
+            type="text"
+            required
+          />
+          <button type="submit">submit</button>
+        </form>
+      </div>
+      <p>
+        {messages.length} {room}
+      </p>
+    </div>
+  );
+}
+
+interface messageDetails {
+  roomName: string;
+  sender: string;
+  message: string;
+  time: string;
 }
